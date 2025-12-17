@@ -7,7 +7,8 @@ tags:
 - alphafold
 - structure-prediction
 - esm
-pipeline_tag: feature-extraction
+- protein
+- bioinformatics
 ---
 
 # FRACTAL 3B Protein Structure Predictor
