@@ -58,7 +58,26 @@ import time
 CASP14_PDB_MAP = {
     "T1024": "6X2W", "T1025": "6X5X", "T1026": "6X64", "T1027": "6X7C",
     "T1028": "6X8F", "T1029": "6X8Y", "T1030": "6X91", "T1031": "6XBG",
-    # Add more mappings as needed - this is a subset
+    "T1032": "6XC3", "T1033": "6XDR", "T1034": "6XE1", "T1035": "6XE4",
+    "T1036": "6XFL", "T1037": "6XG9", "T1038": "6XGV", "T1039": "6XIL",
+    "T1040": "6XJZ", "T1041": "6XL4", "T1042": "6XLH", "T1043": "6XNI",
+    "T1044": "6XQS", "T1045": "6XR7", "T1046": "6XS3", "T1047": "6Y2X",
+    "T1048": "6Y3K", "T1049": "6Y3P", "T1050": "6Y62", "T1051": "6Y6I",
+    "T1052": "6Y97", "T1053": "6YAV", "T1054": "6YB1", "T1055": "6YBR",
+    "T1056": "6YC3", "T1057": "6YCE", "T1058": "6YCJ", "T1059": "6YCO",
+    "T1060": "6YCS", "T1061": "6YDB", "T1062": "6YDQ", "T1063": "6YDU",
+    "T1064": "6YE6", "T1065": "6YEB", "T1066": "6YEH", "T1067": "6YEK",
+    "T1068": "6YER", "T1069": "6YF0", "T1070": "6YF2", "T1071": "6YF5",
+    "T1072": "6YFA", "T1073": "6YFF", "T1074": "6YFN", "T1075": "6YFU",
+    "T1076": "6YG0", "T1077": "6YG5", "T1078": "6YG7", "T1079": "6YGD",
+    "T1080": "6YGI", "T1081": "6YGO", "T1082": "6YGX", "T1083": "6YH6",
+    "T1084": "6YHB", "T1085": "6YHF", "T1086": "6YHJ", "T1087": "6YHM",
+    "T1088": "6YHR", "T1089": "6YHV", "T1090": "6YI2", "T1091": "6YI7",
+    "T1092": "6YIA", "T1093": "6YIE", "T1094": "6YII", "T1095": "6YIO",
+    "T1096": "6YIY", "T1097": "6YJ3", "T1098": "6YJ8", "T1099": "6YJE",
+    "T1100": "6YJJ", "T1101": "6YJN", "T1102": "6YJU", "T1103": "6YK0",
+    "T1104": "6YK4", "T1105": "6YK9", "T1106": "6YKE", "T1107": "6YKI",
+    "T1108": "6YKN", "T1109": "6YKQ", "T1110": "6YKU", "T1111": "6YKY",
 }
 
 output_dir = Path("data/casp14/structures")
@@ -283,10 +302,13 @@ def benchmark_casp14(model, casp14_dir, device="cpu", output_dir="results/casp14
             # Fold to structure
             start = time.time()
             structure = fold_from_constraints(
-                predictions, 
-                num_steps=1000, 
-                lr=0.01, 
-                device=device
+                sequence=sequence,
+                distance_logits=predictions.distance_logits,
+                contact_logits=predictions.contact_logits,
+                torsion_angles=predictions.torsion_angles,
+                confidence=predictions.confidence,
+                steps=1000,
+                lr=0.01,
             )
             folding_time = time.time() - start
             folding_times.append(folding_time)
