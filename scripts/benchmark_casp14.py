@@ -290,6 +290,13 @@ def benchmark_casp14(model, casp14_dir, device="cpu", output_dir="results/casp14
             print(f"  Skipping {target}: no native structure")
             continue
         
+        # Truncate if too long (model max_len is typically 1024)
+        max_len = getattr(model.cfg, 'max_len', 1024)
+        if len(sequence) > max_len:
+            print(f"  Truncating {target} from {len(sequence)} to {max_len} residues")
+            sequence = sequence[:max_len]
+            target_results["truncated"] = True
+        
         try:
             # Predict constraints
             start = time.time()
