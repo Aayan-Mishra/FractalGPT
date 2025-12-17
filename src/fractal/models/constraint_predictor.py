@@ -149,7 +149,26 @@ class ConstraintPredictor(nn.Module):
         device: str = "cpu",
         override_cfg: dict | None = None,
     ) -> "ConstraintPredictor":
-        load_dir = Path(load_directory)
+        from pathlib import Path
+        
+        load_path = str(load_directory)
+        
+        # Check if it's a HuggingFace repo (contains "/" and not a local path)
+        if "/" in load_path and not Path(load_path).exists():
+            # Download from HuggingFace Hub
+            try:
+                from huggingface_hub import snapshot_download
+                print(f"Downloading model from HuggingFace: {load_path}")
+                cache_dir = snapshot_download(repo_id=load_path)
+                load_dir = Path(cache_dir)
+            except ImportError:
+                raise ImportError(
+                    "huggingface_hub is required to load models from HuggingFace. "
+                    "Install with: pip install huggingface_hub"
+                )
+        else:
+            load_dir = Path(load_path)
+        
         cfg_path = load_dir / "config.json"
         
         # If config.json not found, try /checkpoint subdirectory (for HuggingFace repos)
