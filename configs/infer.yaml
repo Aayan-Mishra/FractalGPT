@@ -1,0 +1,11 @@
+model:
+  esm_checkpoint: esm2_t30_150M_UR50D
+  num_distance_bins: 64
+  predict_confidence: true
+
+inference:
+  device: cpu
+  max_len: 1024
+
+geometry:
+  steps: 500

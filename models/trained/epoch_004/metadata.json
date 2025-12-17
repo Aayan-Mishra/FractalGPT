@@ -1,0 +1,6 @@
+{
+  "epoch": 4,
+  "global_step": 350,
+  "best_val_loss": Infinity,
+  "is_best": false
+}

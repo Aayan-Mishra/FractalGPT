@@ -1,0 +1,44 @@
+# FRACTAL training config (AlphaFold-style with validation)
+
+model:
+  esm_checkpoint: esm2_t36_3B_UR50D
+  freeze_backbone: true
+  unfreeze_last_n_layers: 0
+  num_distance_bins: 64
+  pairwise_dim: 128
+  head_hidden_dim: 128
+  predict_confidence: true
+  max_len: 512
+
+data:
+  train_manifest: data/processed_10k/train_manifest.jsonl
+  val_manifest: data/processed_10k/val_manifest.jsonl
+  batch_size: 1
+  num_workers: 2
+
+optim:
+  lr: 5.0e-5
+  weight_decay: 1.0e-3
+  grad_accum_steps: 16
+  grad_clip: 1.0
+  amp: true
+
+trainer:
+  epochs: 20
+  save_dir: models/trained/
+  
+  # Validation & checkpointing
+  validate_every_n_epochs: 1
+  save_every_n_epochs: 5
+  keep_last_n_checkpoints: 3
+  
+  # Learning rate scheduling
+  use_lr_scheduler: true
+  lr_scheduler_patience: 5
+  lr_scheduler_factor: 0.5
+  
+  # Logging
+  log_every_n_steps: 50
+  
+  # Early stopping
+  early_stopping_patience: 15
