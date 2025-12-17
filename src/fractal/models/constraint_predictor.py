@@ -151,6 +151,14 @@ class ConstraintPredictor(nn.Module):
     ) -> "ConstraintPredictor":
         load_dir = Path(load_directory)
         cfg_path = load_dir / "config.json"
+        
+        # If config.json not found, try /checkpoint subdirectory (for HuggingFace repos)
+        if not cfg_path.exists():
+            checkpoint_dir = load_dir / "checkpoint"
+            if (checkpoint_dir / "config.json").exists():
+                load_dir = checkpoint_dir
+                cfg_path = load_dir / "config.json"
+        
         weights_path = load_dir / "pytorch_model.bin"
 
         cfg_dict = json.loads(cfg_path.read_text())

@@ -176,6 +176,11 @@ See example predictions in the repository.
         
         Path("README_HF.md").write_text(readme_content)
         
+        # Copy model card
+        import shutil
+        if Path("hf_model_card.md").exists():
+            shutil.copy("hf_model_card.md", "MODEL_CARD.md")
+        
         # Install huggingface_hub if needed
         run_cmd("pip install -q huggingface_hub", "Install HuggingFace Hub")
         
@@ -183,6 +188,7 @@ See example predictions in the repository.
         push_script = f"""
 from huggingface_hub import HfApi, create_repo
 import os
+import shutil
 
 api = HfApi()
 
@@ -192,11 +198,41 @@ try:
 except Exception as e:
     print(f"Repo creation: {{e}}")
 
-# Upload checkpoint
+# Prepare upload directory
+upload_dir = "hf_upload"
+os.makedirs(upload_dir, exist_ok=True)
+
+# Copy checkpoint files
+for f in ["config.json", "pytorch_model.bin"]:
+    src = f"models/trained/best/{{f}}"
+    if os.path.exists(src):
+        shutil.copy(src, upload_dir)
+
+# Copy source code for custom loading
+src_fractal = "src/fractal"
+dest_fractal = f"{{upload_dir}}/fractal"
+if os.path.exists(dest_fractal):
+    shutil.rmtree(dest_fractal)
+shutil.copytree(src_fractal, dest_fractal)
+
+# Create __init__.py for auto-loading
+with open(f"{{upload_dir}}/__init__.py", "w") as f:
+    f.write(\"\"\"from fractal.models import ConstraintPredictor
+__all__ = ["ConstraintPredictor"]
+\"\"\")
+
+# Create requirements.txt
+with open(f"{{upload_dir}}/requirements.txt", "w") as f:
+    f.write(\"\"\"torch>=2.0.0
+fair-esm>=2.0.0
+biotite>=0.38.0
+\"\"\")
+
+# Upload entire folder
 api.upload_folder(
-    folder_path="models/trained/best",
+    folder_path=upload_dir,
     repo_id="{args.hf_repo}",
-    path_in_repo="checkpoint",
+    commit_message="Upload FRACTAL model with source code",
 )
 
 # Upload examples
@@ -211,12 +247,20 @@ for i in range(1, 4):
         except Exception as e:
             print(f"Upload example_{{i}}.{{ext}}: {{e}}")
 
-# Upload README
-api.upload_file(
-    path_or_fileobj="README_HF.md",
-    path_in_repo="README.md",
-    repo_id="{args.hf_repo}",
-)
+# Upload model card as README
+if os.path.exists("MODEL_CARD.md"):
+    api.upload_file(
+        path_or_fileobj="MODEL_CARD.md",
+        path_in_repo="README.md",
+        repo_id="{args.hf_repo}",
+    )
+else:
+    # Fallback to generated README
+    api.upload_file(
+        path_or_fileobj="README_HF.md",
+        path_in_repo="README.md",
+        repo_id="{args.hf_repo}",
+    )
 
 print("✓ Model pushed to HuggingFace: https://huggingface.co/{args.hf_repo}")
 """
