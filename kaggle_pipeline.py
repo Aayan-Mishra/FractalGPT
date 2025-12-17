@@ -206,7 +206,7 @@ for i in range(1, 4):
             api.upload_file(
                 path_or_fileobj=f"example_{{i}}.{{ext}}",
                 path_in_repo=f"examples/example_{{i}}.{{ext}}",
-                repo_id="{args.hf_repo}}",
+                repo_id="{args.hf_repo}",
             )
         except Exception as e:
             print(f"Upload example_{{i}}.{{ext}}: {{e}}")
@@ -215,7 +215,7 @@ for i in range(1, 4):
 api.upload_file(
     path_or_fileobj="README_HF.md",
     path_in_repo="README.md",
-    repo_id="{args.hf_repo}}",
+    repo_id="{args.hf_repo}",
 )
 
 print("✓ Model pushed to HuggingFace: https://huggingface.co/{args.hf_repo}")
