@@ -73,7 +73,7 @@ structure.to_pdb("output.pdb")
 
 ```bash
 # Predict and fold in one command
-proteinfold fold input.fasta --checkpoint YOUR_USERNAME/fractal-3b --viz
+fractal fold input.fasta --checkpoint YOUR_USERNAME/fractal-3b --viz
 
 # This generates:
 # - input.pdb (3D structure)

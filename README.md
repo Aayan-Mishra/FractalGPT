@@ -42,7 +42,7 @@ Create an environment and install:
 Run CLI help:
 
 ```bash
-proteinfold --help
+fractal --help
 ```
 
 ## Training with Validation

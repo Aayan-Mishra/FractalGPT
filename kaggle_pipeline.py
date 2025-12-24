@@ -105,7 +105,7 @@ def main():
         fasta_path.write_text(f"{header}\n{seq}\n")
         
         run_cmd(
-            f"proteinfold fold {fasta_path} --checkpoint models/trained/best --device cuda",
+            f"fractal fold {fasta_path} --checkpoint models/trained/best --device cuda",
             f"Inference example {i}: {header.split('|')[0]}"
         )
     
@@ -286,7 +286,7 @@ print("✓ Model pushed to HuggingFace: https://huggingface.co/{args.hf_repo}")
     -----------
     - Check training metrics in models/trained/best/metadata.json
     - View examples in browser (*.html files)
-    - Run inference: proteinfold fold your_protein.fasta
+    - Run inference: fractal fold your_protein.fasta
     """)
 
 

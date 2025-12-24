@@ -26,8 +26,15 @@ train = ["tqdm>=4.66"]
 data = ["requests>=2.31", "tqdm>=4.66", "gemmi>=0.6.6"]
 test = ["pytest>=8.0"]
 viz = ["matplotlib>=3.8"]
+webui = [
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.27",
+  "python-multipart>=0.0.9",
+  "pyngrok>=7.0",
+]
 
 [project.scripts]
+fractal = "fractal.cli:app"
 proteinfold = "fractal.cli:app"
 
 [tool.setuptools]

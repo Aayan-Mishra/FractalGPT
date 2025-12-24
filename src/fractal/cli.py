@@ -13,6 +13,68 @@ from fractal.visualization import render_structure_png, write_ngl_html
 app = typer.Typer(add_completion=False, no_args_is_help=True)
 
 
+@app.command("webui")
+def webui(
+    host: str = typer.Option("127.0.0.1", "--host", help="Bind host (default: 127.0.0.1)."),
+    port: int = typer.Option(8000, "--port", help="Bind port (default: 8000)."),
+    reload: bool = typer.Option(True, "--reload/--no-reload", help="Auto-reload on code changes."),
+    share: bool = typer.Option(False, "--share", help="Create a public URL via ngrok (for Kaggle/Colab)."),
+):
+    """Start the local FastAPI WebUI server.
+    
+    Use --share to get a public URL for cloud environments like Kaggle or Colab.
+    """
+
+    try:
+        import uvicorn  # type: ignore
+    except Exception as e:
+        raise typer.BadParameter(
+            "WebUI dependencies are not installed. Run: pip install -e '.[webui]'"
+        ) from e
+
+    if share:
+        # Public tunnel mode for cloud environments
+        try:
+            from pyngrok import ngrok  # type: ignore
+        except ImportError:
+            typer.echo("Installing pyngrok for public URL...")
+            import subprocess
+            subprocess.check_call(["pip", "install", "pyngrok"])
+            from pyngrok import ngrok  # type: ignore
+
+        # Start ngrok tunnel
+        public_url = ngrok.connect(port, bind_tls=True)
+        typer.echo("")
+        typer.echo("=" * 60)
+        typer.echo("🌐 FRACTAL WebUI - Public URL")
+        typer.echo("=" * 60)
+        typer.echo(f"  Public URL: {public_url}")
+        typer.echo(f"  Local URL:  http://{host}:{port}")
+        typer.echo("=" * 60)
+        typer.echo("")
+        
+        # In share mode, bind to 0.0.0.0 and disable reload
+        uvicorn.run(
+            "fractal.webui.app:app",
+            host="0.0.0.0",
+            port=port,
+            reload=False,
+            log_level="info",
+        )
+    else:
+        # Local mode
+        typer.echo("")
+        typer.echo(f"🧬 FRACTAL WebUI running at http://{host}:{port}")
+        typer.echo("")
+        uvicorn.run(
+            "fractal.webui.app:app",
+            host=host,
+            port=port,
+            reload=reload,
+            log_level="info",
+        )
+
+
 @app.command("fold")
 def fold(
     fasta: Path = typer.Argument(..., help="Input FASTA file."),
