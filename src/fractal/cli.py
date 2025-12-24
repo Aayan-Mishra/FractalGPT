@@ -19,10 +19,12 @@ def webui(
     port: int = typer.Option(8000, "--port", help="Bind port (default: 8000)."),
     reload: bool = typer.Option(True, "--reload/--no-reload", help="Auto-reload on code changes."),
     share: bool = typer.Option(False, "--share", help="Create a public URL via ngrok (for Kaggle/Colab)."),
+    ngrok_token: str = typer.Option(None, "--ngrok-token", envvar="NGROK_AUTH_TOKEN", help="ngrok auth token (or set NGROK_AUTH_TOKEN env var)."),
 ):
     """Start the local FastAPI WebUI server.
     
     Use --share to get a public URL for cloud environments like Kaggle or Colab.
+    Requires ngrok auth token: get free at https://dashboard.ngrok.com/get-started/your-authtoken
     """
 
     try:
@@ -35,12 +37,32 @@ def webui(
     if share:
         # Public tunnel mode for cloud environments
         try:
-            from pyngrok import ngrok  # type: ignore
+            from pyngrok import ngrok, conf  # type: ignore
         except ImportError:
             typer.echo("Installing pyngrok for public URL...")
             import subprocess
             subprocess.check_call(["pip", "install", "pyngrok"])
-            from pyngrok import ngrok  # type: ignore
+            from pyngrok import ngrok, conf  # type: ignore
+
+        # Configure ngrok auth token
+        if ngrok_token:
+            conf.get_default().auth_token = ngrok_token
+        else:
+            # Check if already configured
+            import os
+            if not os.environ.get("NGROK_AUTH_TOKEN") and not conf.get_default().auth_token:
+                typer.echo("")
+                typer.echo("⚠️  ngrok requires an auth token for public URLs.")
+                typer.echo("   Get your free token at: https://dashboard.ngrok.com/get-started/your-authtoken")
+                typer.echo("")
+                typer.echo("   Then run with:")
+                typer.echo("     fractal webui --share --ngrok-token YOUR_TOKEN")
+                typer.echo("")
+                typer.echo("   Or set the environment variable:")
+                typer.echo("     export NGROK_AUTH_TOKEN=YOUR_TOKEN")
+                typer.echo("     fractal webui --share")
+                typer.echo("")
+                raise typer.Exit(1)
 
         # Start ngrok tunnel
         public_url = ngrok.connect(port, bind_tls=True)
@@ -49,7 +71,7 @@ def webui(
         typer.echo("🌐 FRACTAL WebUI - Public URL")
         typer.echo("=" * 60)
         typer.echo(f"  Public URL: {public_url}")
-        typer.echo(f"  Local URL:  http://{host}:{port}")
+        typer.echo(f"  Local URL:  http://0.0.0.0:{port}")
         typer.echo("=" * 60)
         typer.echo("")
         
