@@ -23,13 +23,6 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Bio-Informatics",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-
-[project.urls]
-Homepage = "https://github.com/Aayan-Mishra/FractalGPT"
-Repository = "https://github.com/Aayan-Mishra/FractalGPT"
-Documentation = "https://github.com/Aayan-Mishra/FractalGPT#readme"
-Issues = "https://github.com/Aayan-Mishra/FractalGPT/issues"
-
 dependencies = [
   "numpy>=1.24",
   "certifi>=2024.0.0",
@@ -38,6 +31,12 @@ dependencies = [
   "pydantic>=2.5",
   "PyYAML>=6.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Aayan-Mishra/FractalGPT"
+Repository = "https://github.com/Aayan-Mishra/FractalGPT"
+Documentation = "https://github.com/Aayan-Mishra/FractalGPT#readme"
+Issues = "https://github.com/Aayan-Mishra/FractalGPT/issues"
 
 [project.optional-dependencies]
 esm = ["fair-esm>=2.0.0"]
