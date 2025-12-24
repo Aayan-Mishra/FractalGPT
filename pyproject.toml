@@ -3,13 +3,32 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fractal-folding"
-version = "0.1.0"
-description = "FRACTAL: Framework for Representation-guided Atomic ConsTruction & ALignment"
+name = "fractalml"
+version = "1.0.0"
+description = "FRACTAL: Framework for Representation-guided Atomic ConsTruction & ALignment - A protein structure prediction system"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [{ name = "FRACTAL Contributors" }]
+authors = [{ name = "Aayan Mishra" }]
+keywords = ["protein", "folding", "structure-prediction", "bioinformatics", "deep-learning", "esm", "alphafold"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://github.com/Aayan-Mishra/FractalGPT"
+Repository = "https://github.com/Aayan-Mishra/FractalGPT"
+Documentation = "https://github.com/Aayan-Mishra/FractalGPT#readme"
+Issues = "https://github.com/Aayan-Mishra/FractalGPT/issues"
 
 dependencies = [
   "numpy>=1.24",
