@@ -5,6 +5,9 @@
   <img src="https://img.shields.io/github/actions/workflow/status/Aayan-Mishra/FractalGPT/publish.yml?style=flat-square&label=build" alt="Build Status">
 </p>
 
+![Banner](https://huggingface.co/HuxleyResearch/FRACTAL-1-3B/resolve/main/banner-fractal.png)
+
+
 # FRACTAL
 
 **Framework for Representation-guided Atomic ConsTruction and ALignment**
